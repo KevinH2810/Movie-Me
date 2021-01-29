@@ -2,13 +2,13 @@ const { conn } = require("../db/connection");
 
 module.exports = class MovieCastService {
 	async insertMovieCast(payload) {
-		return new Promise(resolve => {
+		return new Promise((resolve, reject) => {
 			conn.query(
 				"SELECT * FROM movie_cast WHERE movie_id = $1 AND actor_id = $2",
-				[payload.movieid, payload. actorid],
+				[payload.movieid, payload.actorid],
 				(err, result) => {
 					if (err) {
-						resolve(err, null);
+						reject(new Error(err));
 					}
 	
 					if (result.rowCount === 0) {
@@ -20,10 +20,10 @@ module.exports = class MovieCastService {
 							],
 							(err) => {
 								if (err) {
-									resolve(err);
+									reject(new Error(err));
 								}
 	
-								resolve("Movie Inserted" );
+								resolve("Movie and Actor linked" );
 							}
 						);
 					}
@@ -34,34 +34,36 @@ module.exports = class MovieCastService {
 		})
 	}
 
-	async deleteMovieCast(payload, callback) {
-		conn.query(
-			"SELECT * FROM movie_cast WHERE movie_id = $1 AND actor_id = $2",
-			[payload.movieid, payload. actorid],
-			(err, result) => {
-				if (err) {
-					return callback(err, null);
-				}
-
-				if (result.rowCount > 0) {
-					conn.query(
-						"DELETE FROM movie_cast where movie_id= $1 , actor_id = $2 ",
-						[
-							payload.movieid,
-							payload.actorid,
-						],
-						(err) => {
-							if (err) {
-								return callback(err, null);
+	async deleteMovieCast(payload) {
+		return new Promise((resolve, reject) => {
+			conn.query(
+				"SELECT * FROM movie_cast WHERE movie_id = $1 AND actor_id = $2",
+				[payload.movieid, payload.actorid],
+				(err, result) => {
+					if (err) {
+						reject(new Error(err));
+					}
+	
+					if (result.rowCount > 0) {
+						conn.query(
+							"DELETE FROM movie_cast where movie_id= $1 , actor_id = $2 ",
+							[
+								payload.movieid,
+								payload.actorid,
+							],
+							(err) => {
+								if (err) {
+									reject(new Error(err));
+								}
+	
+								resolve("Movie and Actor delete" );
 							}
-
-							return callback( null, "Movie Deleted" );
-						}
-					);
+						);
+					}
+	
+					resolve( "Movie and Actor already nonexistent" );
 				}
-
-				return callback( null, "Movie didnt have that actor as the cast" );
-			}
-		);
+			);
+		})
 	}
 }
