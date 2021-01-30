@@ -38,4 +38,35 @@ module.exports = class ActorService {
 			);
 		});
 	}
+
+	async updateActorDetail(payload, callback) {
+		conn.query(
+			"UPDATE actor Set actorname = $1 where id = $2 RETURNING id",
+			[
+				payload.genreName,
+				payload.genreid
+			],
+			(err, res) => {
+				if (err) {
+					return callback(err, null);
+				}
+				return callback(null, res.rows);
+			}
+		);
+	}
+
+	async deleteActor(actorId, callback){
+		conn.query(
+			"DELETE FROM actor where id = $1",
+			[
+				actorId
+			],
+			(err, res) => {
+				if (err) {
+					return callback(err, null);
+				}
+				return callback(null, res);
+			}
+		);
+	}
 };

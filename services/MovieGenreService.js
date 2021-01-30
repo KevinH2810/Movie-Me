@@ -1,6 +1,26 @@
 const { conn } = require("../db/connection");
 
 module.exports = class MovieGenreService {
+	async getMovieGenre(movieid){
+		return new Promise((resolve, reject) => {
+			conn.query(
+				"SELECT * FROM movie_genre WHERE movie_id = $1",
+				[movieid],
+				(err, result) => {
+					if (err) {
+						reject(new Error(err));
+					}
+
+					if(result.rowCount === 0){
+						reject(new Error("no genre for this film"))
+					}
+
+					resolve(result.rows)
+				}
+			)
+		} )
+	}
+
 	async insertMovieGenre(payload) {
 		return new Promise((resolve, reject) => {
 			conn.query(
