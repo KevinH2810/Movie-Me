@@ -27,4 +27,8 @@ router.put('/update', (req, res) => {
     movieController.updateMovieDetail(req, res)
 });
 
+router.delete('/delete', (req, res) => {
+    movieController.deleteMovie(req, res)
+  });
+
 module.exports = router;

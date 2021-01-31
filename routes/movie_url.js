@@ -7,6 +7,10 @@ router.get('/', (req, res) => {
     movieURLController.getMovieURL(req, res)
 });
 
+router.post('/add', (req, res) => {
+  movieURLController.addMovieURL(req, res)
+});
+
 router.put('/update', (req, res) => {
   movieController.updateMovieURL(req, res)
 });

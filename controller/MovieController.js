@@ -5,6 +5,7 @@ const {
 	GenreService,
 	MovieGenreService,
 	MovieURLService,
+	MovieVoteService,
 } = require("../services");
 const BaseController = require("./BaseController");
 const HandleError = require("./HandleError");
@@ -20,13 +21,14 @@ module.exports = class MovieController extends BaseController {
 		this.genreService = new GenreService();
 		this.movieGenreService = new MovieGenreService();
 		this.movieURLService = new MovieURLService();
+		this.movieVoteService = new MovieVoteService();
 	}
 
 	async getMovies(req, res) {
 		const handleError = new HandleError();
-		const {page, limit} = req.body
+		const { page, limit } = req.body;
 
-		this.service.getMovies({page, limit}, (err, result) => {
+		this.service.getMovies({ page, limit }, (err, result) => {
 			if (err) {
 				handleError.sendCatchError(res, err);
 				return;
@@ -38,7 +40,7 @@ module.exports = class MovieController extends BaseController {
 				paginate: {
 					limit: limit || result.rowCount,
 					page: page || 1,
-				}
+				},
 			});
 		});
 	}
@@ -88,7 +90,10 @@ module.exports = class MovieController extends BaseController {
 		} = req.body;
 
 		if (!title || !actors || !genre) {
-			handleError.sendCatchError(res, `Title / actors / genre fields are mandatory`);
+			handleError.sendCatchError(
+				res,
+				`Title / actors / genre fields are mandatory`
+			);
 			return;
 		}
 
@@ -117,7 +122,9 @@ module.exports = class MovieController extends BaseController {
 					let actorsArr = actors.split(",");
 					let ActorIdArr = [];
 					for (let actorName of actorsArr) {
-						let ActorId = await this.actorService.getActorbyActorName({ actorName });
+						let ActorId = await this.actorService.getActorbyActorName({
+							actorName,
+						});
 						ActorIdArr.push(ActorId);
 					}
 
@@ -125,7 +132,9 @@ module.exports = class MovieController extends BaseController {
 					let genreArr = genre.split(",");
 					let GenreIdArr = [];
 					for (let genreName of genreArr) {
-						let genreId = await this.genreService.getGenresbyName({ genreName });
+						let genreId = await this.genreService.getGenresbyName({
+							genreName,
+						});
 						GenreIdArr.push(genreId);
 					}
 
@@ -241,7 +250,7 @@ module.exports = class MovieController extends BaseController {
 			});
 		});
 	}
-	
+
 	async getMostVoted(req, res) {
 		const handleError = new HandleError();
 
@@ -259,8 +268,11 @@ module.exports = class MovieController extends BaseController {
 					return;
 				} else {
 					if (decoded.role !== "admin") {
-						handleError.sendCatchError(res, `Your Role is not permitted to view the most voted movie`);
-					return;
+						handleError.sendCatchError(
+							res,
+							`Your Role is not permitted to view the most voted movie`
+						);
+						return;
 					}
 
 					this.service.getMostVotedMovie((err, result) => {
@@ -268,7 +280,7 @@ module.exports = class MovieController extends BaseController {
 							handleError.sendCatchError(res, err);
 							return;
 						}
-			
+
 						return this.sendSuccessResponse(res, {
 							status: 200,
 							message: result.rows,
@@ -313,21 +325,40 @@ module.exports = class MovieController extends BaseController {
 					}
 
 					//check for movie in Movie_url, movie_cast and movie_vote and delete it
-					const movie_url_promise = this.movieURLService.DeleteMovieURLByMovieId({id})
-					const movie_cast_promise = this.movieCastService.DeleteMovieCastByMovieId({id})
-					const movie_vote_promise = this.movie
+					const movie_url_promise = this.movieURLService.DeleteMovieURLByMovieId(
+						{ id }
+					);
+					const movie_cast_promise = this.movieCastService.DeleteMovieCastByMovieId(
+						{ id }
+					);
+					const movie_vote_promise = this.movieVoteService.getMovieVoteByMovieId(
+						{ id }
+					);
+					const movie_genre_promise = this.movieGenreService.deleteMovieGenreByMovieId(
+						{ id }
+					);
 
+					Promise.all([
+						movie_url_promise,
+						movie_cast_promise,
+						movie_vote_promise,
+						movie_genre_promise,
+					]).then((results) => {
+						this.service.DeleteMovie(id, (err, result) => {
+							if (err) {
+								handleError.sendCatchError(res, err);
+								return;
+							}
 
-					this.service.DeleteMovie(id, (err, result) => {
-						if (err) {
-							handleError.sendCatchError(res, err);
-							return;
-						}
-
-						return this.sendSuccessResponse(res, {
-							status: 200,
-							message: result,
+							return this.sendSuccessResponse(res, {
+								status: 200,
+								message: "Movie Deleted Succesfully",
+							});
 						});
+					})
+					.catch(error => {
+						handleError.sendCatchError(res, error);
+						return;
 					});
 				}
 			});

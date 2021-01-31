@@ -200,7 +200,6 @@ module.exports = class ActorController extends BaseController {
 
 						this.service.deleteActor(actorid, (err) => {
 							if (err) {
-                console.log("err = ", err)
 								handleError.sendCatchError(res, err);
 								return;
 							}

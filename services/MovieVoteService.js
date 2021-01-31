@@ -66,27 +66,27 @@ module.exports = class MovieVoteService {
 		);
 	}
 
-	async getMovieVoteByMovieId(payload, callback) {
-		console.log("payload = ", payload)
-		conn.query(
-			`select id, movie_id, user_id, 
-      case status 
-	      when 1 then 'Voted'
-	      when 0 then 'unvoted'
-	    end as vote
-			from movie_vote
-			where movie_id = $1
-			LIMIT $2 OFFSET (($3 - 1) * $2)
-			`,
-			[payload.movie_id, payload.limit, payload.page],
-			async (err, result) => {
-				if (err) {
-					return callback(err, null);
+	async getMovieVoteByMovieId(payload) {
+		return new Promise((resolve, reject) => {
+			conn.query(
+				`select id, movie_id, user_id, 
+				case status 
+					when 1 then 'Voted'
+					when 0 then 'unvoted'
+				end as vote
+				from movie_vote
+				where movie_id = $1
+				LIMIT $2 OFFSET (($3 - 1) * $2)
+				`,
+				[payload.movie_id, payload.limit, payload.page],
+				async (err, result) => {
+					if (err) {
+						reject(new Erorr(err));
+					}
+	
+					resolve(result.rows);
 				}
-				console.log("result = ", result)
-
-				return callback(null, result.rows);
-			}
-		);
+			);
+		})
 	}
 };

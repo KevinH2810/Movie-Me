@@ -19,4 +19,7 @@ router.put('/updateActor', (req, res) => {
   actorController.updateActor(req, res)
 });
 
+router.delete('/deleteActor', (req, res) => {
+  actorController.deleteActor(req, res)
+});
 module.exports = router;
