@@ -1,0 +1,1196 @@
+{
+	"info": {
+		"_postman_id": "70903fbb-1232-4d7a-9d97-87e69c1d54da",
+		"name": "MovieMe",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "admin@admin.com",
+							"type": "text"
+						},
+						{
+							"key": "role",
+							"value": "admin",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:9011/register?username=admin&password=admin&email=admin@admin.com&role=admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"register"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "admin"
+						},
+						{
+							"key": "password",
+							"value": "admin"
+						},
+						{
+							"key": "email",
+							"value": "admin@admin.com"
+						},
+						{
+							"key": "role",
+							"value": "admin"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/login",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"login"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "admin",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actor - get all Actors",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9011/actor/",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"actor",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actor - Get one actor by id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMDM2MzgyLCJleHAiOjE2MTIxMjI3ODJ9.mi8u1OjMWWZC_FzYhGGsWdqzlvRmvWvM-3_F3sbyUiM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9011/actor/1",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"actor",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actor - add",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMDM2MzgyLCJleHAiOjE2MTIxMjI3ODJ9.mi8u1OjMWWZC_FzYhGGsWdqzlvRmvWvM-3_F3sbyUiM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "actorName",
+							"value": "Daniel Radcliff",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/actor/addActor",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"actor",
+						"addActor"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actor - Update Actor detail",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMDM2MzgyLCJleHAiOjE2MTIxMjI3ODJ9.mi8u1OjMWWZC_FzYhGGsWdqzlvRmvWvM-3_F3sbyUiM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id",
+							"value": "30",
+							"type": "text"
+						},
+						{
+							"key": "actorName",
+							"value": "Ice Cubube",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/actor/updateActor",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"actor",
+						"updateActor"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actor - Delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMDM2MzgyLCJleHAiOjE2MTIxMjI3ODJ9.mi8u1OjMWWZC_FzYhGGsWdqzlvRmvWvM-3_F3sbyUiM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "actorid",
+							"value": "36",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/actor/deleteActor",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"actor",
+						"deleteActor"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Genre - Get All Genre",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "page",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "limit",
+							"value": "10",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/genre",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"genre"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Genre - Get One Genre by genre id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9011/genre/1",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"genre",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Genre - add",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMDM2MzgyLCJleHAiOjE2MTIxMjI3ODJ9.mi8u1OjMWWZC_FzYhGGsWdqzlvRmvWvM-3_F3sbyUiM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "genreName",
+							"value": "action",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/genre/addGenre",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"genre",
+						"addGenre"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Genre - update by id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMDM2MzgyLCJleHAiOjE2MTIxMjI3ODJ9.mi8u1OjMWWZC_FzYhGGsWdqzlvRmvWvM-3_F3sbyUiM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id",
+							"value": "6",
+							"type": "text"
+						},
+						{
+							"key": "genreName",
+							"value": "thriller",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/genre/update",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"genre",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Genre-Most Viewed",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9011/genre/MostViewed",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"genre",
+						"MostViewed"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Genre - Delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMDM2MzgyLCJleHAiOjE2MTIxMjI3ODJ9.mi8u1OjMWWZC_FzYhGGsWdqzlvRmvWvM-3_F3sbyUiM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id",
+							"value": "6",
+							"type": "text"
+						},
+						{
+							"key": "genreName",
+							"value": "thriller",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/genre/delete",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"genre",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "History - get",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMDM2MzgyLCJleHAiOjE2MTIxMjI3ODJ9.mi8u1OjMWWZC_FzYhGGsWdqzlvRmvWvM-3_F3sbyUiM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "localhost:9011/history/",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"history",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "History - add",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMDM2MzgyLCJleHAiOjE2MTIxMjI3ODJ9.mi8u1OjMWWZC_FzYhGGsWdqzlvRmvWvM-3_F3sbyUiM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "movie_id",
+							"value": "5",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/history/addHistory",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"history",
+						"addHistory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Movie - get All movie",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9011/movie/",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"movie",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Movie - Most Viewed",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9011/movie/mostViewed",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"movie",
+						"mostViewed"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Movie - get Most Voted Movie",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMDM2MzgyLCJleHAiOjE2MTIxMjI3ODJ9.mi8u1OjMWWZC_FzYhGGsWdqzlvRmvWvM-3_F3sbyUiM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9011/movie/mostVoted",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"movie",
+						"mostVoted"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Movie - Get movie detail",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9011/movie/movieDetail/5",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"movie",
+						"movieDetail",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Movie - add",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMTEzMDIxLCJleHAiOjE2MTIxOTk0MjF9.uPABlWrwW7XWnk29vMTHtqObf3xIztQSXz47DGaNAzk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "title",
+							"value": "Anaconda",
+							"type": "text"
+						},
+						{
+							"key": "actors",
+							"value": "Jennifer Lopez, Jon Voight, Ice Cube, Kari Wuhrer",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "Anaconda is an American horror film series created by Hans Bauer, Jim Cash and Jack Epps Jr.. Produced and distributed by Sony Pictures Home Entertainment, the series began with Anaconda",
+							"type": "text"
+						},
+						{
+							"key": "genre",
+							"value": "horror,thriller",
+							"type": "text"
+						},
+						{
+							"key": "yearrelease",
+							"value": "1997",
+							"type": "text"
+						},
+						{
+							"key": "movielang",
+							"value": "english",
+							"type": "text"
+						},
+						{
+							"key": "durations",
+							"value": "89",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/movie/add",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"movie",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Movie - Updated",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMTEzMDIxLCJleHAiOjE2MTIxOTk0MjF9.uPABlWrwW7XWnk29vMTHtqObf3xIztQSXz47DGaNAzk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id",
+							"value": "7",
+							"type": "text"
+						},
+						{
+							"key": "title",
+							"value": "Anaconda 2",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/movie/update",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"movie",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Movie - Delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMDM2MzgyLCJleHAiOjE2MTIxMjI3ODJ9.mi8u1OjMWWZC_FzYhGGsWdqzlvRmvWvM-3_F3sbyUiM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id",
+							"value": "5",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/movie/delete",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"movie",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Movie_URL - get by movie id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "movie_id",
+							"value": "7",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/movie_url/",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"movie_url",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "movie_url - add",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMTEzMDIxLCJleHAiOjE2MTIxOTk0MjF9.uPABlWrwW7XWnk29vMTHtqObf3xIztQSXz47DGaNAzk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "movie_id",
+							"value": "7",
+							"type": "text"
+						},
+						{
+							"key": "url",
+							"value": "www.google.com",
+							"type": "text"
+						},
+						{
+							"key": "servername",
+							"value": "google",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/movie_url/add",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"movie_url",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "movie_url - update",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMTEzMDIxLCJleHAiOjE2MTIxOTk0MjF9.uPABlWrwW7XWnk29vMTHtqObf3xIztQSXz47DGaNAzk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "url",
+							"value": "www.yahoo.com",
+							"type": "text"
+						},
+						{
+							"key": "servername",
+							"value": "yahoo",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/movie_url/update",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"movie_url",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "movie_url - delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMTEzMDIxLCJleHAiOjE2MTIxOTk0MjF9.uPABlWrwW7XWnk29vMTHtqObf3xIztQSXz47DGaNAzk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/movie_url/delete",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"movie_url",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Movie Vote - get all movie",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMDM2MzgyLCJleHAiOjE2MTIxMjI3ODJ9.mi8u1OjMWWZC_FzYhGGsWdqzlvRmvWvM-3_F3sbyUiM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "limit",
+							"value": "5",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "1",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/movie_vote/",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"movie_vote",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Movie Vote - getByMovieId",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMDM2MzgyLCJleHAiOjE2MTIxMjI3ODJ9.mi8u1OjMWWZC_FzYhGGsWdqzlvRmvWvM-3_F3sbyUiM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "movie_id",
+							"value": "5",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/movie_vote/getByMovieId",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"movie_vote",
+						"getByMovieId"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "movie_vote - update",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMTEzMDIxLCJleHAiOjE2MTIxOTk0MjF9.uPABlWrwW7XWnk29vMTHtqObf3xIztQSXz47DGaNAzk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "movie_id",
+							"value": "5",
+							"type": "text"
+						},
+						{
+							"key": "status",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/movie_vote/update",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"movie_vote",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "movie_vote - update",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjEyMDM2MzgyLCJleHAiOjE2MTIxMjI3ODJ9.mi8u1OjMWWZC_FzYhGGsWdqzlvRmvWvM-3_F3sbyUiM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "movie_id",
+							"value": "5",
+							"type": "text"
+						},
+						{
+							"key": "status",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/movie_vote/update",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"movie_vote",
+						"update"
+					],
+					"query": [
+						{
+							"key": "movie_id",
+							"value": "5",
+							"disabled": true
+						},
+						{
+							"key": "status ",
+							"value": "0",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "search",
+							"value": "Voight",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9011/search/",
+					"host": [
+						"localhost"
+					],
+					"port": "9011",
+					"path": [
+						"search",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
