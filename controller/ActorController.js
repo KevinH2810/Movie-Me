@@ -1,21 +1,21 @@
 const {
-  GenreService
+  ActorService
   } = require("../services");
   const BaseController = require("./BaseController");
   const HandleError = require("./HandleError");
   const config = require("../config/config");
 const jwt = require("jsonwebtoken");
   
-  module.exports = class GenreController extends BaseController {
+  module.exports = class ActorController extends BaseController {
     constructor() {
-      super(new GenreService());
+      super(new ActorService());
     }
 
-    async getGenres(req, res) {
+    async getActors(req, res) {
       const handleError = new HandleError();
       const {page, limit} = req.query
   
-      this.service.getGenres({page, limit},(err, result) => {
+      this.service.getActors({page, limit}, (err, result) => {
         if (err) {
           handleError.sendCatchError(res, err);
           return;
@@ -32,17 +32,17 @@ const jwt = require("jsonwebtoken");
       });
     }
 
-    async getGenrebyId(req,res){
+    async getActor(req,res){
 
 		const handleError = new HandleError();
 		const id = req.params.id;
 
 		if (!id) {
-			handleError.sendCatchError(res, `genre id must be supplied`);
+			handleError.sendCatchError(res, `actor id must be supplied`);
 			return;
 		}
 
-		await this.service.getGenre(id, (err, result) => {
+		await this.service.getActor(id, (err, result) => {
 			if (err) {
 				handleError.sendCatchError(res, err);
 				return;
@@ -50,39 +50,76 @@ const jwt = require("jsonwebtoken");
 
 			return this.sendSuccessResponse(res, {
 				status: 200,
-				message: result,
+				message: result.rows,
 			});
 		});
     }
 
-    async getMostViewedGenre(req, res){
-      const handleError = new HandleError();
-  
-      this.service.getMostViewedGenre((err, result) => {
-        if (err) {
-          handleError.sendCatchError(res, err);
-          return;
-        }
-  
-        return this.sendSuccessResponse(res, {
-          status: 200,
-          message: result.rows,
-        });
-      });
-    }
-
-    async insertGenre(req, res){
+    async addActor(req, res){
       const handleError = new HandleError();
 
       const {
-        genreName
+        actorName
       } = req.body;
   
-      if (!genreName) {
+      if (!actorName) {
+        handleError.sendCatchError(res, `actorName is empty. please supply value`);
+        return;
+      }
+  
+      //validate user role
+      let token = req.headers["x-access-token"] || req.headers["authorization"]; // Express headers are auto converted to lowercase
+      if (token && token.startsWith("Bearer ")) {
+        // Remove Bearer from string
+        token = token.slice(7, token.length);
+      }
+  
+      if (token) {
+        jwt.verify(token, config.token.secret, async (err, decoded) => {
+          if (err) {
+            handleError.sendCatchError(res, `Token is not valid error = ${err}`);
+            return;
+          } else {
+            if (decoded.role !== "admin") {
+              handleError.sendCatchError(res, `Your Role is not permitted to add new actor`);
+              return
+            }
+  
+            this.service.insertActor(
+              { actorName },
+              async (err, result) => {
+                if (err) {
+                  handleError.sendCatchError(res, err);
+                  return;
+                }
+
+                return this.sendSuccessResponse(res, {
+                  status: 200,
+                  message: `actor ${result.rows.actorname} succesfully added`,
+                });
+              }
+            );
+          }
+        });
+      } else {
+        handleError.sendCatchError(res, `Auth Token is not supplied`);
+        return;
+      }
+    }
+
+    async updateActor(req, res){
+      const handleError = new HandleError();
+
+      const {
+        id,
+        actorName
+      } = req.body;
+  
+      if (!id || !actorName) {
         handleError.sendCatchError(res, {
           status: 500,
           success: false,
-          message: `genreName is empty. please supply value`,
+          message: `id or actorName is empty. please supply the value`,
         });
         return;
       }
@@ -108,12 +145,12 @@ const jwt = require("jsonwebtoken");
               return res.json({
                 status: 200,
                 success: false,
-                message: `Your Role is not permitted to add genre`,
+                message: `Your Role is not permitted to edit actor`,
               });
             }
   
-            this.service.insertGenre(
-              { genreName },
+            this.service.updateActorDetail(
+              { actorName, id },
               async (err, result) => {
                 if (err) {
                   handleError.sendCatchError(res, err);
@@ -122,7 +159,7 @@ const jwt = require("jsonwebtoken");
 
                 return this.sendSuccessResponse(res, {
                   status: 200,
-                  message: "genre succesfully added",
+                  message: "actor succesfully updated",
                 });
               }
             );
@@ -138,19 +175,19 @@ const jwt = require("jsonwebtoken");
       }
     }
 
-    async updateGenre(req, res){
+    async deleteActor(req, res){
       const handleError = new HandleError();
 
       const {
         id,
-        genreName
+        actorName
       } = req.body;
   
-      if (!id || !genreName) {
+      if (!id && !actorName) {
         handleError.sendCatchError(res, {
           status: 500,
           success: false,
-          message: `id or genreName is empty. please supply the value`,
+          message: `id and actorName is empty. please supply one the value`,
         });
         return;
       }
@@ -165,93 +202,17 @@ const jwt = require("jsonwebtoken");
       if (token) {
         jwt.verify(token, config.token.secret, async (err, decoded) => {
           if (err) {
-            handleError.sendCatchError(res, {
-              status: 500,
-              success: false,
-              message: `Token is not valid error = ${err}`,
-            });
+            handleError.sendCatchError(res, `Token is not valid error = ${err}`);
             return;
           } else {
             if (decoded.role !== "admin") {
-              return res.json({
-                status: 200,
-                success: false,
-                message: `Your Role is not permitted to edit genre`,
-              });
-            }
-  
-            this.service.updateGenreDetail(
-              { genreName, id },
-              async (err, result) => {
-                if (err) {
-                  handleError.sendCatchError(res, err);
-                  return;
-                }
-
-                return this.sendSuccessResponse(res, {
-                  status: 200,
-                  message: "genre succesfully updated",
-                });
-              }
-            );
-          }
-        });
-      } else {
-        handleError.sendCatchError(res, {
-          status: 500,
-          success: false,
-          message: `Auth Token is not supplied`,
-        });
-        return;
-      }
-    }
-
-    async deleteGenre(req, res){
-      const handleError = new HandleError();
-
-      const {
-        id,
-        genreName
-      } = req.body;
-  
-      if (!id && !genreName) {
-        handleError.sendCatchError(res, {
-          status: 500,
-          success: false,
-          message: `id and genreName is empty. please supply one the value`,
-        });
-        return;
-      }
-  
-      //validate user role
-      let token = req.headers["x-access-token"] || req.headers["authorization"]; // Express headers are auto converted to lowercase
-      if (token && token.startsWith("Bearer ")) {
-        // Remove Bearer from string
-        token = token.slice(7, token.length);
-      }
-  
-      if (token) {
-        jwt.verify(token, config.token.secret, async (err, decoded) => {
-          if (err) {
-            handleError.sendCatchError(res, {
-              status: 500,
-              success: false,
-              message: `Token is not valid error = ${err}`,
-            });
-            return;
-          } else {
-            if (decoded.role !== "admin") {
-              return res.json({
-                status: 200,
-                success: false,
-                message: `Your Role is not permitted to delete the genre`,
-              });
+              return res.json(`Your Role is not permitted to delete the genre`);
             }
 
-            //have to check and delete on movie_genre before deleting
+            //have to check on movie_actor before deleting actor
   
             this.service.deleteGenre(
-              { id, genreName },
+              { id, actorName },
               async (err, result) => {
                 if (err) {
                   handleError.sendCatchError(res, err);

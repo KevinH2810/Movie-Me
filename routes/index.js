@@ -1,7 +1,8 @@
   module.exports = function(app) {
       app.use('/register', require('./register'));
       app.use('/login', require('./login'));
-      app.use('/addmoney', require('./addmoney'));
+      app.use('/actor', require('./actor'));
       app.use('/genre', require('./genre'));
+      app.use('/search', require('./search'));
       app.use('/movie', require('./movie'));
   }

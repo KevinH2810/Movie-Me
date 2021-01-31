@@ -22,8 +22,9 @@ module.exports = class MovieController extends BaseController {
 
 	async getMovies(req, res) {
 		const handleError = new HandleError();
+		const {page, limit} = req.query
 
-		this.service.getMovies((err, result) => {
+		this.service.getMovies({page, limit}, (err, result) => {
 			if (err) {
 				handleError.sendCatchError(res, err);
 				return;
@@ -32,6 +33,10 @@ module.exports = class MovieController extends BaseController {
 			return this.sendSuccessResponse(res, {
 				status: 200,
 				message: result.rows,
+				paginate: {
+					limit: limit || result.rowCount,
+					page: page || 1,
+				}
 			});
 		});
 	}
@@ -66,10 +71,10 @@ module.exports = class MovieController extends BaseController {
 		});
 	}
 
-	async upsertMovie(req, res) {
+	async addMovie(req, res) {
 		const handleError = new HandleError();
 
-		//artis & genre is array of ids
+		//artis & genre is coma string
 		const {
 			title,
 			actors,
@@ -91,7 +96,7 @@ module.exports = class MovieController extends BaseController {
 
 		//validate user role
 		let token = req.headers["x-access-token"] || req.headers["authorization"]; // Express headers are auto converted to lowercase
-		if (token.startsWith("Bearer ")) {
+		if (token && token.startsWith("Bearer ")) {
 			// Remove Bearer from string
 			token = token.slice(7, token.length);
 		}
@@ -118,7 +123,7 @@ module.exports = class MovieController extends BaseController {
 					let actorsArr = actors.split(",");
 					let ActorIdArr = [];
 					for (let actorName of actorsArr) {
-						let ActorId = await this.actorService.getActor({ actorName });
+						let ActorId = await this.actorService.getActorbyActorName({ actorName });
 						ActorIdArr.push(ActorId);
 					}
 
@@ -126,11 +131,11 @@ module.exports = class MovieController extends BaseController {
 					let genreArr = genre.split(",");
 					let GenreIdArr = [];
 					for (let genreName of genreArr) {
-						let genreId = await this.genreService.getGenresbyid({ genreName });
+						let genreId = await this.genreService.getGenresbyName({ genreName });
 						GenreIdArr.push(genreId);
 					}
 
-					this.service.upsertMovie(
+					this.service.insertMovie(
 						{ title, description, yearrelease, movielang, durations },
 						async (err, result) => {
 							if (err) {
@@ -185,7 +190,7 @@ module.exports = class MovieController extends BaseController {
 
 		//validate user role
 		let token = req.headers["x-access-token"] || req.headers["authorization"]; // Express headers are auto converted to lowercase
-		if (token.startsWith("Bearer ")) {
+		if (token && token.startsWith("Bearer ")) {
 			// Remove Bearer from string
 			token = token.slice(7, token.length);
 		}
@@ -274,7 +279,7 @@ module.exports = class MovieController extends BaseController {
 
 		//validate user role
 		let token = req.headers["x-access-token"] || req.headers["authorization"]; // Express headers are auto converted to lowercase
-		if (token.startsWith("Bearer ")) {
+		if (token && token.startsWith("Bearer ")) {
 			// Remove Bearer from string
 			token = token.slice(7, token.length);
 		}
@@ -293,7 +298,7 @@ module.exports = class MovieController extends BaseController {
 						return res.json({
 							status: 200,
 							success: false,
-							message: `Your Role is not permitted to edit or add movie`,
+							message: `Your Role is not permitted to delete a movie`,
 						});
 					}
 

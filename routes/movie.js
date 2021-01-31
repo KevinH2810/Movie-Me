@@ -16,7 +16,7 @@ router.get('/movieDetail/:id', (req, res) => {
 });
 
 router.post('/upsert', (req, res) => {
-    movieController.upsertMovie(req, res)
+    movieController.addMovie(req, res)
 });
 
 router.put('/update', (req, res) => {

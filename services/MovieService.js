@@ -1,57 +1,34 @@
 const { conn } = require("../db/connection");
 
 module.exports = class MovieService {
-	async upsertMovie(payload, callback) {
+	async insertMovie(payload, callback) {
 		conn.query(
-			"SELECT * FROM movie WHERE title like $1 ",
-			["%" + payload.title + "%"],
-			(err, result) => {
+			`INSERT INTO movie(title, description, durations, yearrelease, movielang) 
+			SELECT '$1', '$2', $3, $4, '$5'
+			WHERE NOT EXISTS ( SELECT 1 FROM movie WHERE title = $1 )
+			RETURNING id`,
+			[
+				payload.title,
+				payload.description,
+				payload.durations,
+				payload.yearrelease,
+				payload.movielang,
+			],
+			(err, res) => {
 				if (err) {
 					return callback(err, null);
 				}
 
-				if (result.rowCount === 0) {
-					conn.query(
-						"INSERT INTO movie(title, description, durations, yearrelease, movielang) VALUES($1, $2, $3, $4, $5) RETURNING id",
-						[
-							payload.title,
-							payload.description,
-							payload.durations,
-							payload.yearrelease,
-							payload.movielang,
-						],
-						(err, res) => {
-							if (err) {
-								return callback(err, null);
-							}
-
-							return callback(null, res);
-						}
-					);
-				} else {
-					conn.query(
-						"UPDATE movie Set title = $1, description = $2, durations= $3, yearrelease = $4, movielang = $5 where id = $6 RETURNING id",
-						[
-							payload.title,
-							payload.description,
-							payload.durations,
-							payload.yearrelease,
-							payload.movielang,
-							result.rows[0].id,
-						],
-						(err, res) => {
-							if (err) {
-								return callback(err, null);
-							}
-							return callback(null, res.rows[0].id);
-						}
-					);
+				if(res.rowCount === 0){
+					return callback(null, `movie with title ${payload.title} already exists`)
 				}
+
+				return callback(null, res);
 			}
 		);
 	}
 
-	async getMovies(callback) {
+	async getMovies(payload, callback) {
 		conn.query(
 			`SELECT movie.id, title, string_agg(distinct actor.actorname , ',') as actorname, 
 			string_agg(distinct g2.genrename , ',') as genrename, description, durations, 
@@ -61,8 +38,10 @@ module.exports = class MovieService {
 			inner join actor actor on movcast.actor_id=actor.id 
 			inner join movie_genre mg on movie.id = mg.movie_id 
 			inner join genre g2 on mg.genre_id = g2.id
-			group by movie.id
-			`,
+			GROUP BY movie.id
+			ORDER BY id
+			LIMIT $1 OFFSET (($2 - 1) * $1)
+			`,[payload.limit, payload.page],
 			(err, results) => {
 				if (err) {
 					return callback(err, null);
@@ -71,6 +50,29 @@ module.exports = class MovieService {
 				return callback(null, results);
 			}
 		);
+	}
+
+	async searchMovies(payload, callback) {
+		conn.query(
+			`SELECT movie.id, title, string_agg(distinct actor.actorname , ',') as actorname, 
+			string_agg(distinct g2.genrename , ',') as genrename, description, durations, 
+			yearrelease, movielang, movie.viewed, voted
+			FROM movie movie 
+			inner join movie_cast movcast on movie.id = movcast.movie_id 
+			inner join actor actor on movcast.actor_id=actor.id 
+			inner join movie_genre mg on movie.id = mg.movie_id 
+			inner join genre g2 on mg.genre_id = g2.id
+			where title ilike $1  or actorname ilike $1  or genrename ilike $1  or description ilike $1
+			GROUP BY movie.id
+			ORDER BY id
+			LIMIT $2 OFFSET (($3 - 1) * $2)
+			`,['%' + payload.search + '%', payload.limit, payload.page],(err, results) => {
+				if (err) {
+					return callback(err, null);
+				}
+
+				return callback(null, results);
+			});
 	}
 
 	async getMostViewedMovie(callback) {
@@ -153,18 +155,12 @@ module.exports = class MovieService {
 		});
 	}
 
-	async DeleteMovie(movieId, callback){
-		conn.query(
-			"DELETE FROM movie where id = $1",
-			[
-				movieId
-			],
-			(err, res) => {
-				if (err) {
-					return callback(err, null);
-				}
-				return callback(null, res);
+	async DeleteMovie(movieId, callback) {
+		conn.query("DELETE FROM movie where id = $1", [movieId], (err, res) => {
+			if (err) {
+				return callback(err, null);
 			}
-		);
+			return callback(null, res);
+		});
 	}
 };
