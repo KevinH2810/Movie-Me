@@ -4,7 +4,7 @@ module.exports = class MovieService {
 	async insertMovie(payload, callback) {
 		conn.query(
 			`INSERT INTO movie(title, description, durations, yearrelease, movielang) 
-			SELECT '$1', '$2', $3, $4, '$5'
+			SELECT $1::text, $2::text, $3::INTEGER, $4::INTEGER, $5::text
 			WHERE NOT EXISTS ( SELECT 1 FROM movie WHERE title = $1 )
 			RETURNING id`,
 			[
@@ -23,7 +23,7 @@ module.exports = class MovieService {
 					return callback(null, `movie with title ${payload.title} already exists`)
 				}
 
-				return callback(null, res);
+				return callback(null, res.rows[0].id);
 			}
 		);
 	}

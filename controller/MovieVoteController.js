@@ -53,6 +53,11 @@ module.exports = class MovieURLController extends BaseController {
 		const handleError = new HandleError();
 		let { movie_id, limit, page } = req.body;
 
+		if(!movie_id){
+			handleError.sendCatchError(res, `movie_id must be supplied`);
+			return;
+		}
+
 		limit = limit ? limit : 10;
 		page = page ? page : 1;
 

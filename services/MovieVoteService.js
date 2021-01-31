@@ -66,10 +66,9 @@ module.exports = class MovieVoteService {
 		);
 	}
 
-	async getMovieVoteByMovieId(payload) {
-		return new Promise((resolve, reject) => {
-			conn.query(
-				`select id, movie_id, user_id, 
+	async getMovieVoteByMovieId(payload, callback) {
+		conn.query(
+			`select id, movie_id, user_id, 
 				case status 
 					when 1 then 'Voted'
 					when 0 then 'unvoted'
@@ -78,15 +77,14 @@ module.exports = class MovieVoteService {
 				where movie_id = $1
 				LIMIT $2 OFFSET (($3 - 1) * $2)
 				`,
-				[payload.movie_id, payload.limit, payload.page],
-				async (err, result) => {
-					if (err) {
-						reject(new Erorr(err));
-					}
-	
-					resolve(result.rows);
+			[payload.movie_id, payload.limit, payload.page],
+			async (err, result) => {
+				if (err) {
+					return callback(err,null);
 				}
-			);
-		})
+
+				return callback(null,result.rows);
+			}
+		);
 	}
 };

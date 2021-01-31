@@ -49,9 +49,10 @@ module.exports = class ActorService {
 					if (result.rowCount === 0) {
 						const result = await this.insertActor(payload);
 						resolve(result);
-					}
-					//return actor Id if actor exist
+					}else{
+						//return actor Id if actor exist
 					resolve(result.rows[0].id);
+					}
 				}
 			);
 		});
@@ -61,7 +62,7 @@ module.exports = class ActorService {
 	async insertActor(payload, callback) {
 		conn.query(
 			`insert into actor (actorname)
-			select '$1'
+			select $1::text
 			where not exists (
 					select actorname from actor where actorname = $1
 			) RETURNING *`,
@@ -71,11 +72,13 @@ module.exports = class ActorService {
 					return callback(err, null)
 				}
 
-				if(res.rowCount === 0){
-					return callback(`Actor with name ${payload.actorName} already exists`, null)
-				}
+				console.log("res = ", res)
 
-				return callback(null, res)
+				if(res.rowCount === 0){
+					return callback(`Actor with name ${payload.actorName} already exists`, null);
+				}else{
+					return callback(null, res)
+				}
 			}
 		);
 	}

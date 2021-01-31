@@ -2,13 +2,17 @@ const { conn } = require("../db/connection");
 
 module.exports = class ActorService {
 	async getGenres(payload, callback) {
-		conn.query("SELECT id, genrename FROM genre ORDER BY id LIMIT $1 OFFSET (($2 - 1) * $1) ",[payload.limit, payload.page], async (err, result) => {
-			if (err) {
-				return callback(err, null);
-			}
+		conn.query(
+			"SELECT id, genrename FROM genre ORDER BY id LIMIT $1 OFFSET (($2 - 1) * $1) ",
+			[payload.limit, payload.page],
+			async (err, result) => {
+				if (err) {
+					return callback(err, null);
+				}
 
-			return callback(null, result);
-		});
+				return callback(null, result);
+			}
+		);
 	}
 
 	async getGenre(id, callback) {
@@ -17,10 +21,10 @@ module.exports = class ActorService {
 			[id],
 			async (err, result) => {
 				if (err) {
-					return callback(err, null)
+					return callback(err, null);
 				}
 				//return actor Id if actor exist
-				return callback(null, result.rows)
+				return callback(null, result.rows);
 			}
 		);
 	}
@@ -41,7 +45,7 @@ module.exports = class ActorService {
 						resolve(result);
 					}
 					//return actor Id if actor exist
-					resolve(result.rows);
+					resolve(result.rows[0].id);
 				}
 			);
 		});
@@ -63,29 +67,31 @@ module.exports = class ActorService {
 	}
 
 	//payload = id, username, username that login
-	async insertGenre(payload) {
-		return new Promise((resolve, reject) => {
-			conn.query(
-				`insert into genre (genrename)
-				select '$1'
+	async insertGenre(payload, callback) {
+		console.log(payload)
+		conn.query(
+			`insert into genre (genrename)
+				select  $1::text
 				where not exists (
-						select 1 from genre where genrename = $1
+						select * from genre where genrename = $1
 				) 
 				RETURNING id`,
-				[payload.genreName],
-				(err, res) => {
-					if (err) {
-						reject(new Error(err));
-					}
-
-					if(res.rowCount === 0){
-						return callback(null, `genre with name ${payload.genreName} already exists`)
-					}
-
-					resolve(res.rows[0].id);
+			[payload.genreName],
+			(err, res) => {
+				if (err) {
+					return callback(err, null);
 				}
-			);
-		});
+
+				if (res.rowCount === 0) {
+					return callback(
+						null,
+						`genre with name ${payload.genreName} already exists`
+					);
+				}
+
+				return callback(null,res.rows);
+			}
+		);
 	}
 
 	async getMostViewedGenre(callback) {
@@ -117,12 +123,16 @@ module.exports = class ActorService {
 	}
 
 	async deleteGenre(payload, callback) {
-		conn.query("DELETE FROM genre where id = $1 OR genrename like $2", [payload.id, "%" + payload.genreName + "%"], (err, res) => {
-			if (err) {
-				return callback(err, null);
+		conn.query(
+			"DELETE FROM genre where id = $1 OR genrename like $2",
+			[payload.id, "%" + payload.genreName + "%"],
+			(err, res) => {
+				if (err) {
+					return callback(err, null);
+				}
+				return callback(null, res);
 			}
-			return callback(null, res);
-		});
+		);
 	}
 
 	async getMostViewedGenre(callback) {

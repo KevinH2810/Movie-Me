@@ -4,7 +4,7 @@ module.exports = class AuthService {
 	async register(payload, callback) {
 		conn.query(
 			`INSERT INTO userlogin(username,password, email, userrole) VALUES ($1,$2,$3,$4)`,
-			[payload.username, md5(payload.password), payload.email, payload.role],
+			[payload.username, payload.password, payload.email, payload.role],
 			(err, res) => {
 				if (err) {
 					return callback(err, null);

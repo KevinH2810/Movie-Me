@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/mostViewed', (req, res) => {
-    movieController.getMostViewedMovie(req, res)
+    movieController.getMostViewed(req, res)
 });
 
 router.get('/mostVoted', (req, res) => {
@@ -19,7 +19,7 @@ router.get('/movieDetail/:id', (req, res) => {
     movieController.getMovie(req, res)
 });
 
-router.post('/upsert', (req, res) => {
+router.post('/add', (req, res) => {
     movieController.addMovie(req, res)
 });
 

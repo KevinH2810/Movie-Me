@@ -40,7 +40,7 @@ const jwt = require("jsonwebtoken");
 		const id = req.params.id;
 
 		if (!id) {
-			handleError.sendCatchError(res, `genre id must be supplied`);
+			handleError.sendCatchError(res, `id param must be supplied`);
 			return;
 		}
 
@@ -99,13 +99,10 @@ const jwt = require("jsonwebtoken");
             return;
           } else {
             if (decoded.role !== "admin") {
-              return res.json({
-                status: 200,
-                success: false,
-                message: `Your Role is not permitted to add genre`,
-              });
+              handleError.sendCatchError(res, "You are not permitted to add genre");
+                  return;
             }
-  
+            
             this.service.insertGenre(
               { genreName },
               async (err) => {

@@ -12,7 +12,11 @@ router.post('/add', (req, res) => {
 });
 
 router.put('/update', (req, res) => {
-  movieController.updateMovieURL(req, res)
+  movieURLController.updateMovieURL(req, res)
+});
+
+router.delete('/delete', (req, res) => {
+  movieURLController.deleteMovieURL(req, res)
 });
 
 module.exports = router;

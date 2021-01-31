@@ -4,8 +4,8 @@
       app.use('/actor', require('./actor'));
       app.use('/genre', require('./genre'));
       app.use('/search', require('./search'));
+      app.use('/history', require('./history'));
       app.use('/movie', require('./movie'));
       app.use('/movie_vote', require('./movie_vote'));
       app.use('/movie_url', require('./movie_url'));
-      
   }

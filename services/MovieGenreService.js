@@ -29,9 +29,11 @@ module.exports = class MovieGenreService {
 				(err, result) => {
 					if (err) {
 						reject(new Error(err));
-					}
+					}	
+
+					console.log("result = ", result)
           
-					if (result.rowCount === 0) {
+					if (!result || result.rowCount === 0) {
 						conn.query(
 							"INSERT INTO movie_genre(movie_id, genre_id) VALUES($1, $2)",
 							[

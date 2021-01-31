@@ -15,7 +15,7 @@ module.exports = class AuthController extends BaseController {
         const { username, password, email, role } = req.body;
         const handleError = new HandleError();
 
-        this.service.register({ username, password, email, role },(err, result) =>{
+        this.service.register({ username, password: md5(password), email, role },(err, result) =>{
             if (err) {
                 handleError.sendCatchError(res, err);
                 return;
@@ -51,7 +51,9 @@ module.exports = class AuthController extends BaseController {
                 });
             }
 
-            if (result !== 0 && md5(password) !== result.rows[0].password) {
+            console.log(result[0])
+
+            if (result && md5(password) !== result[0].password) {
                 return this.sendCreatedResponse(res, {
                     status: 204,
                     message: "Password does not matched with associated email or username",
@@ -59,13 +61,13 @@ module.exports = class AuthController extends BaseController {
             }
 
             // create a token
-            var tokens = jwt.sign({ userid: result.rows[0].id,username: result.rows[0].username, password: result.rows[0].password, role: result.rows[0].userrole }, config.token.secret, {
+            var tokens = jwt.sign({ userid: result[0].id,username: result[0].username, password: result[0].password, role: result[0].userrole }, config.token.secret, {
                 expiresIn: 86400 // expires in 24 hours
             })
 
             return this.sendSuccessResponse(res, {
 				status: 200,
-                message: "Register Success",
+                message: "Login Success",
                 token: tokens,
 			});
         })

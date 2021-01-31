@@ -164,7 +164,7 @@ module.exports = class MovieController extends BaseController {
 
 							return this.sendSuccessResponse(res, {
 								status: 200,
-								message: "Movie succesfully upsert",
+								message: "Movie succesfully added",
 							});
 						}
 					);
@@ -187,6 +187,11 @@ module.exports = class MovieController extends BaseController {
 			movielang,
 		} = req.body;
 
+		if (!id) {
+			handleError.sendCatchError(res, "id param must be supplied");
+			return;
+		}
+
 		//validate user role
 		let token = req.headers["x-access-token"] || req.headers["authorization"]; // Express headers are auto converted to lowercase
 		if (token && token.startsWith("Bearer ")) {
@@ -201,16 +206,8 @@ module.exports = class MovieController extends BaseController {
 					return;
 				} else {
 					if (decoded.role !== "admin") {
-						return res.json({
-							status: 200,
-							success: false,
-							message: `Your Role is not permitted to edit or add movie`,
-						});
-					}
-
-					if (!id) {
-						handleError.sendCatchError(res, `movie_id must be supplied`);
-						return;
+						handleError.sendCatchError(res, `Your Role is not permitted to edit movie`);
+								return;
 					}
 
 					this.service.updateMovieDetail(
@@ -223,7 +220,7 @@ module.exports = class MovieController extends BaseController {
 
 							return this.sendSuccessResponse(res, {
 								status: 200,
-								message: result,
+								message: "Movie Updated",
 							});
 						}
 					);
@@ -238,7 +235,7 @@ module.exports = class MovieController extends BaseController {
 	async getMostViewed(req, res) {
 		const handleError = new HandleError();
 
-		this.service.getMostViewed((err, result) => {
+		this.service.getMostViewedMovie((err, result) => {
 			if (err) {
 				handleError.sendCatchError(res, err);
 				return;
@@ -343,23 +340,24 @@ module.exports = class MovieController extends BaseController {
 						movie_cast_promise,
 						movie_vote_promise,
 						movie_genre_promise,
-					]).then((results) => {
-						this.service.DeleteMovie(id, (err, result) => {
-							if (err) {
-								handleError.sendCatchError(res, err);
-								return;
-							}
+					])
+						.then((results) => {
+							this.service.DeleteMovie(id, (err, result) => {
+								if (err) {
+									handleError.sendCatchError(res, err);
+									return;
+								}
 
-							return this.sendSuccessResponse(res, {
-								status: 200,
-								message: "Movie Deleted Succesfully",
+								return this.sendSuccessResponse(res, {
+									status: 200,
+									message: "Movie Deleted Succesfully",
+								});
 							});
+						})
+						.catch((error) => {
+							handleError.sendCatchError(res, error);
+							return;
 						});
-					})
-					.catch(error => {
-						handleError.sendCatchError(res, error);
-						return;
-					});
 				}
 			});
 		} else {

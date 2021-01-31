@@ -39,11 +39,12 @@ module.exports = class MovieCastService {
 				"SELECT * FROM movie_cast WHERE movie_id = $1 AND actor_id = $2",
 				[payload.movieid, payload.actorid],
 				(err, result) => {
+
 					if (err) {
 						reject(new Error(err));
 					}
 	
-					if (result.rowCount === 0) {
+					if (!result || result.rowCount === 0) {
 						conn.query(
 							"INSERT INTO movie_cast(movie_id, actor_id) VALUES($1, $2)",
 							[

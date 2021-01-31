@@ -3,7 +3,9 @@ const { conn } = require("../db/connection");
 module.exports = class MovieURLService {
 	async getMovieURL(movie_id, callback) {
 		conn.query(
-			"SELECT id, movie_id,url, servername FROM movie_url where movie_id = $1 returning id",
+			`SELECT id, movie_id,url, servername 
+			FROM movie_url 
+			where movie_id = $1`,
 			[movie_id],
 			(err, results) => {
 				if (err) {
