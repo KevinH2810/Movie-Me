@@ -1,7 +1,8 @@
-const MovieService = require('./MovieService');
 const ActorService = require('./ActorService')
-const MovieCastService = require('./MovieCastService')
+const HistoryService = require('./HistoryService')
 const GenreService = require('./GenreServices')
+const MovieService = require('./MovieService');
+const MovieCastService = require('./MovieCastService')
 const MovieGenreService = require('./MovieGenreService')
 const MovieURLService = require('./MovieURLService')
 
@@ -11,5 +12,6 @@ module.exports = {
   MovieCastService,
   GenreService,
   MovieGenreService,
-  MovieURLService
+  MovieURLService,
+  HistoryService,
 }
