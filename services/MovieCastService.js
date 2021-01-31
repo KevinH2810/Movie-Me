@@ -1,6 +1,38 @@
 const { conn } = require("../db/connection");
 
 module.exports = class MovieCastService {
+	async deleteMovieCastByActorId(payload, callback){
+		conn.query(
+			`DELETE FROM movie_cast 
+			where actor_id = $1`,
+			[payload.actorid],
+			async (err, result) => {
+				if (err) {
+					return callback(err, null);
+				}
+
+				return callback(null, result);
+			}
+		);
+	}
+
+	async DeleteMovieCastByMovieId(payload){
+		return new Promise((resolve, reject) => {
+			conn.query(
+				`DELETE FROM movie_cast 
+				where movie_id = $1`,
+				[payload.id],
+				async (err, result) => {
+					if (err) {
+						reject(new Error(err));
+					}
+	
+					resolve(result);
+				}
+			);
+		})
+	}
+
 	async insertMovieCast(payload) {
 		return new Promise((resolve, reject) => {
 			conn.query(

@@ -5,6 +5,7 @@ const MovieService = require('./MovieService');
 const MovieCastService = require('./MovieCastService')
 const MovieGenreService = require('./MovieGenreService')
 const MovieURLService = require('./MovieURLService')
+const MovieVoteService = require('./MovieVoteService')
 
 module.exports = {
   MovieService,
@@ -14,4 +15,5 @@ module.exports = {
   MovieGenreService,
   MovieURLService,
   HistoryService,
+  MovieVoteService,
 }

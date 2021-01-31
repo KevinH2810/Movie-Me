@@ -93,8 +93,8 @@ module.exports = class ActorService {
 		);
 	}
 
-	async deleteActor(actorId, callback) {
-		conn.query("DELETE FROM actor where id = $1", [actorId], (err, res) => {
+	async deleteActor(actorid, callback) {
+		conn.query("DELETE FROM actor where id = $1", [actorid], (err, res) => {
 			if (err) {
 				return callback(err, null);
 			}

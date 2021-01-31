@@ -4,6 +4,7 @@ const {
 	MovieCastService,
 	GenreService,
 	MovieGenreService,
+	MovieURLService,
 } = require("../services");
 const BaseController = require("./BaseController");
 const HandleError = require("./HandleError");
@@ -18,11 +19,12 @@ module.exports = class MovieController extends BaseController {
 		this.movieCastService = new MovieCastService();
 		this.genreService = new GenreService();
 		this.movieGenreService = new MovieGenreService();
+		this.movieURLService = new MovieURLService();
 	}
 
 	async getMovies(req, res) {
 		const handleError = new HandleError();
-		const {page, limit} = req.query
+		const {page, limit} = req.body
 
 		this.service.getMovies({page, limit}, (err, result) => {
 			if (err) {
@@ -86,11 +88,7 @@ module.exports = class MovieController extends BaseController {
 		} = req.body;
 
 		if (!title || !actors || !genre) {
-			handleError.sendCatchError(res, {
-				status: 500,
-				success: false,
-				message: `Title / actors / genre fields are mandatory`,
-			});
+			handleError.sendCatchError(res, `Title / actors / genre fields are mandatory`);
 			return;
 		}
 
@@ -104,11 +102,7 @@ module.exports = class MovieController extends BaseController {
 		if (token) {
 			jwt.verify(token, config.token.secret, async (err, decoded) => {
 				if (err) {
-					handleError.sendCatchError(res, {
-						status: 500,
-						success: false,
-						message: `Token is not valid error = ${err}`,
-					});
+					handleError.sendCatchError(res, `Token is not valid error = ${err}`);
 					return;
 				} else {
 					if (decoded.role !== "admin") {
@@ -168,11 +162,7 @@ module.exports = class MovieController extends BaseController {
 				}
 			});
 		} else {
-			handleError.sendCatchError(res, {
-				status: 500,
-				success: false,
-				message: `Auth Token is not supplied`,
-			});
+			handleError.sendCatchError(res, `Auth Token is not supplied`);
 			return;
 		}
 	}
@@ -198,11 +188,7 @@ module.exports = class MovieController extends BaseController {
 		if (token) {
 			jwt.verify(token, config.token.secret, async (err, decoded) => {
 				if (err) {
-					handleError.sendCatchError(res, {
-						status: 500,
-						success: false,
-						message: `Token is not valid error = ${err}`,
-					});
+					handleError.sendCatchError(res, `Token is not valid error = ${err}`);
 					return;
 				} else {
 					if (decoded.role !== "admin") {
@@ -214,11 +200,7 @@ module.exports = class MovieController extends BaseController {
 					}
 
 					if (!id) {
-						handleError.sendCatchError(res, {
-							status: 500,
-							success: false,
-							message: `movie id must be supplied`,
-						});
+						handleError.sendCatchError(res, `movie_id must be supplied`);
 						return;
 					}
 
@@ -239,11 +221,7 @@ module.exports = class MovieController extends BaseController {
 				}
 			});
 		} else {
-			handleError.sendCatchError(res, {
-				status: 500,
-				success: false,
-				message: `Auth Token is not supplied`,
-			});
+			handleError.sendCatchError(res, `Auth Token is not supplied`);
 			return;
 		}
 	}
@@ -263,17 +241,53 @@ module.exports = class MovieController extends BaseController {
 			});
 		});
 	}
+	
+	async getMostVoted(req, res) {
+		const handleError = new HandleError();
+
+		//validate user role
+		let token = req.headers["x-access-token"] || req.headers["authorization"]; // Express headers are auto converted to lowercase
+		if (token && token.startsWith("Bearer ")) {
+			// Remove Bearer from string
+			token = token.slice(7, token.length);
+		}
+
+		if (token) {
+			jwt.verify(token, config.token.secret, async (err, decoded) => {
+				if (err) {
+					handleError.sendCatchError(res, `Token is not valid error = ${err}`);
+					return;
+				} else {
+					if (decoded.role !== "admin") {
+						handleError.sendCatchError(res, `Your Role is not permitted to view the most voted movie`);
+					return;
+					}
+
+					this.service.getMostVotedMovie((err, result) => {
+						if (err) {
+							handleError.sendCatchError(res, err);
+							return;
+						}
+			
+						return this.sendSuccessResponse(res, {
+							status: 200,
+							message: result.rows,
+						});
+					});
+				}
+			});
+		} else {
+			handleError.sendCatchError(res, `Auth Token is not supplied`);
+			return;
+		}
+	}
 
 	async deleteMovie(req, res) {
 		const handleError = new HandleError();
 		const { id } = req.body;
 
 		if (!id) {
-			handleError.sendCatchError(res, {
-				status: 500,
-				success: false,
-				message: `movie id must be supplied`,
-			});
+			handleError.sendCatchError(res, `id must be supplied`);
 			return;
 		}
 
@@ -287,11 +301,7 @@ module.exports = class MovieController extends BaseController {
 		if (token) {
 			jwt.verify(token, config.token.secret, async (err, decoded) => {
 				if (err) {
-					handleError.sendCatchError(res, {
-						status: 500,
-						success: false,
-						message: `Token is not valid error = ${err}`,
-					});
+					handleError.sendCatchError(res, `Token is invalid error = ${err}`);
 					return;
 				} else {
 					if (decoded.role !== "admin") {
@@ -302,7 +312,11 @@ module.exports = class MovieController extends BaseController {
 						});
 					}
 
-					//check for movie in Movie_url, movie_cast and delete it
+					//check for movie in Movie_url, movie_cast and movie_vote and delete it
+					const movie_url_promise = this.movieURLService.DeleteMovieURLByMovieId({id})
+					const movie_cast_promise = this.movieCastService.DeleteMovieCastByMovieId({id})
+					const movie_vote_promise = this.movie
+
 
 					this.service.DeleteMovie(id, (err, result) => {
 						if (err) {
@@ -318,11 +332,7 @@ module.exports = class MovieController extends BaseController {
 				}
 			});
 		} else {
-			handleError.sendCatchError(res, {
-				status: 500,
-				success: false,
-				message: `Auth Token is not supplied`,
-			});
+			handleError.sendCatchError(res, `Auth Bearer Token is not supplied`);
 			return;
 		}
 	}

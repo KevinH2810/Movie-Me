@@ -5,4 +5,6 @@
       app.use('/genre', require('./genre'));
       app.use('/search', require('./search'));
       app.use('/movie', require('./movie'));
+      app.use('/movie_vote', require('./movie_vote'));
+      
   }

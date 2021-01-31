@@ -96,6 +96,27 @@ module.exports = class MovieService {
 		);
 	}
 
+	async getMostVotedMovie(callback) {
+		conn.query(
+			`SELECT movie.id, title, string_agg(distinct actor.actorname , ',') as actorname, string_agg(distinct g2.genrename , ',') as genrename, description, durations, yearrelease, movielang, movie.viewed, movie.voted
+			FROM movie movie 
+			INNER JOIN (select MAX(voted) as voted from movie) b on movie.voted = b.voted 
+			inner join movie_cast movcast on movie.id = movcast.movie_id 
+			inner join actor actor on movcast.actor_id=actor.id 
+			inner join movie_genre mg on movie.id = mg.movie_id 
+			inner join genre g2 on mg.genre_id = g2.id
+			group by movie.id
+			`,
+			(err, results) => {
+				if (err) {
+					return callback(err, null);
+				}
+
+				return callback(null, results);
+			}
+		);
+	}
+
 	async getMovie(id, callback) {
 		conn.query(
 			`SELECT movie.id, title, string_agg(distinct actor.actorname , ',') as actorname, 
@@ -153,6 +174,28 @@ module.exports = class MovieService {
 				}
 			);
 		});
+	}
+
+	async updateMovieVote(payload){
+		console.log("payload = ", payload)
+		return new Promise((resolve, reject) => {
+			conn.query(
+				`UPDATE movie 
+				Set voted = voted + $2
+				where id = $1
+				RETURNING voted`,
+				[
+					payload.movie_id,
+					payload.statusVal
+				],
+				(err, res) => {
+					if (err) {
+						reject(new Error(err));
+					}
+					resolve(res.rows);
+				}
+			);
+		})
 	}
 
 	async DeleteMovie(movieId, callback) {

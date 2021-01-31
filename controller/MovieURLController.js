@@ -4,6 +4,7 @@ MovieURLService
 const BaseController = require("./BaseController");
 const HandleError = require("./HandleError");
 const config = require("../config/config");
+const jwt = require("jsonwebtoken");
 
 module.exports = class MovieURLController extends BaseController {
 	constructor() {
@@ -12,7 +13,7 @@ module.exports = class MovieURLController extends BaseController {
 
   async getMovieURL(req, res) {
     const handleError = new HandleError();
-    const {movie_id} = req.body;
+    const {movie_id, limit, page} = req.body;
 
     //add to movie history if user logged in
     //validate user role
@@ -25,11 +26,7 @@ module.exports = class MovieURLController extends BaseController {
     if (token) {
 			jwt.verify(token, config.token.secret, async (err, decoded) => {
 				if (err) {
-					handleError.sendCatchError(res, {
-						status: 500,
-						success: false,
-						message: `Token is not valid error = ${err}`,
-					});
+					handleError.sendCatchError(res, `Token is not valid error = ${err}`);
 					return;
 				} else {
 					if (decoded.role !== "admin") {
@@ -64,11 +61,7 @@ module.exports = class MovieURLController extends BaseController {
     const {id, url, servername} = req.body;
 
     if (!id){
-      handleError.sendCatchError(res, {
-        status: 500,
-				success: false,
-				message: `movie id must be supplied`,
-      });
+      handleError.sendCatchError(res, `id must be supplied`);
       return;
     }
 

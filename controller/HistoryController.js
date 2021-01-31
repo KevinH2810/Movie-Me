@@ -1,6 +1,8 @@
 const { HistoryService } = require("../services");
 const BaseController = require("./BaseController");
 const HandleError = require("./HandleError");
+const config = require("../config/config");
+const jwt = require("jsonwebtoken");
 
 module.exports = class HistoryController extends BaseController {
 	constructor() {
@@ -10,7 +12,7 @@ module.exports = class HistoryController extends BaseController {
 	async getUserViewHistory(req, res) {
 		const handleError = new HandleError();
     const id = req.params.id;
-    const {limit, page} = req.query
+    const {limit, page} = req.body
 
     limit = limit ? limit : 10;
     page = page ? page : 1;
@@ -39,11 +41,7 @@ module.exports = class HistoryController extends BaseController {
 		const { movie_id } = req.body;
 
 		if (!movie_id) {
-			handleError.sendCatchError(res, {
-				status: 500,
-				success: false,
-				message: `movie_id is empty. please supply value`,
-			});
+			handleError.sendCatchError(res, `movie_id is empty. please supply value`);
 			return;
 		}
 
@@ -57,11 +55,7 @@ module.exports = class HistoryController extends BaseController {
 		if (token) {
 			jwt.verify(token, config.token.secret, async (err, decoded) => {
 				if (err) {
-					handleError.sendCatchError(res, {
-						status: 500,
-						success: false,
-						message: `Token is not valid error = ${err}`,
-					});
+					handleError.sendCatchError(res, `Token is not valid error = ${err}`);
 					return;
 				} else {
 					const user_id = decoded.userid;
@@ -79,11 +73,7 @@ module.exports = class HistoryController extends BaseController {
 				}
 			});
 		} else {
-			handleError.sendCatchError(res, {
-				status: 500,
-				success: false,
-				message: `Auth Token is not supplied`,
-			});
+			handleError.sendCatchError(res, `Auth Token is not supplied`);
 			return;
 		}
 	}

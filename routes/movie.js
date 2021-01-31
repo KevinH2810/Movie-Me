@@ -11,6 +11,10 @@ router.get('/mostViewed', (req, res) => {
     movieController.getMostViewedMovie(req, res)
 });
 
+router.get('/mostVoted', (req, res) => {
+    movieController.getMostVoted(req, res)
+});
+
 router.get('/movieDetail/:id', (req, res) => {
     movieController.getMovie(req, res)
 });

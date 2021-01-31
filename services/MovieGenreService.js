@@ -57,7 +57,7 @@ module.exports = class MovieGenreService {
 	async deleteMovieGenre(payload) {
 		return new Promise((resolve, reject) => {
 			conn.query(
-				"SELECT * FROM movie_genre WHERE movie_id = $1 AND genre_id = $2",
+				"SELECT * FROM movie_genre WHERE movie_id = $1 OR genre_id = $2",
 				[payload.movieid, payload.genreid],
 				(err, result) => {
 					if (err) {
@@ -86,4 +86,37 @@ module.exports = class MovieGenreService {
 			);
 		})
 	}
+
+	async deleteMovieGenreByGenreId(payload, callback){
+		conn.query(
+			`DELETE FROM movie_genre 
+			where genre_id = $1`,
+			[payload.genreid],
+			async (err, result) => {
+				if (err) {
+					return callback(err, null);
+				}
+
+				return callback(null, result);
+			}
+		);
+	}
+
+	async deleteMovieGenreByMovieId(payload){
+		return new Promise((resolve, reject) => {
+			conn.query(
+				`DELETE FROM movie_genre
+				where movie_id = $1`,
+				[payload.movie_id],
+				async (err, result) => {
+					if (err) {
+						reject(new Error(err));
+					}
+	
+					resolve(result);
+				}
+			);
+		})	
+	}
+
 }

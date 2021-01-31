@@ -1,5 +1,6 @@
 const {
-  GenreService
+  GenreService,
+  MovieGenreService
   } = require("../services");
   const BaseController = require("./BaseController");
   const HandleError = require("./HandleError");
@@ -9,11 +10,12 @@ const jwt = require("jsonwebtoken");
   module.exports = class GenreController extends BaseController {
     constructor() {
       super(new GenreService());
+      this.movieGenreService = new MovieGenreService();
     }
 
     async getGenres(req, res) {
       const handleError = new HandleError();
-      const {page, limit} = req.query
+      const {page, limit} = req.body
   
       this.service.getGenres({page, limit},(err, result) => {
         if (err) {
@@ -79,11 +81,7 @@ const jwt = require("jsonwebtoken");
       } = req.body;
   
       if (!genreName) {
-        handleError.sendCatchError(res, {
-          status: 500,
-          success: false,
-          message: `genreName is empty. please supply value`,
-        });
+        handleError.sendCatchError(res, `genreName is empty. please supply value`);
         return;
       }
   
@@ -97,11 +95,7 @@ const jwt = require("jsonwebtoken");
       if (token) {
         jwt.verify(token, config.token.secret, async (err, decoded) => {
           if (err) {
-            handleError.sendCatchError(res, {
-              status: 500,
-              success: false,
-              message: `Token is not valid error = ${err}`,
-            });
+            handleError.sendCatchError(res, `Token is not valid error = ${err}`);
             return;
           } else {
             if (decoded.role !== "admin") {
@@ -114,7 +108,7 @@ const jwt = require("jsonwebtoken");
   
             this.service.insertGenre(
               { genreName },
-              async (err, result) => {
+              async (err) => {
                 if (err) {
                   handleError.sendCatchError(res, err);
                   return;
@@ -129,11 +123,7 @@ const jwt = require("jsonwebtoken");
           }
         });
       } else {
-        handleError.sendCatchError(res, {
-          status: 500,
-          success: false,
-          message: `Auth Token is not supplied`,
-        });
+        handleError.sendCatchError(res, `Auth Bearer Token is not supplied`);
         return;
       }
     }
@@ -147,11 +137,7 @@ const jwt = require("jsonwebtoken");
       } = req.body;
   
       if (!id || !genreName) {
-        handleError.sendCatchError(res, {
-          status: 500,
-          success: false,
-          message: `id or genreName is empty. please supply the value`,
-        });
+        handleError.sendCatchError(res, `id or genreName is empty. please supply the value`);
         return;
       }
   
@@ -165,11 +151,7 @@ const jwt = require("jsonwebtoken");
       if (token) {
         jwt.verify(token, config.token.secret, async (err, decoded) => {
           if (err) {
-            handleError.sendCatchError(res, {
-              status: 500,
-              success: false,
-              message: `Token is not valid error = ${err}`,
-            });
+            handleError.sendCatchError(res, `Token is not valid error = ${err}`);
             return;
           } else {
             if (decoded.role !== "admin") {
@@ -197,13 +179,10 @@ const jwt = require("jsonwebtoken");
           }
         });
       } else {
-        handleError.sendCatchError(res, {
-          status: 500,
-          success: false,
-          message: `Auth Token is not supplied`,
-        });
+        handleError.sendCatchError(res, `Auth Bearer Token is not supplied`);
         return;
       }
+    
     }
 
     async deleteGenre(req, res){
@@ -215,11 +194,7 @@ const jwt = require("jsonwebtoken");
       } = req.body;
   
       if (!id && !genreName) {
-        handleError.sendCatchError(res, {
-          status: 500,
-          success: false,
-          message: `id and genreName is empty. please supply one the value`,
-        });
+        handleError.sendCatchError(res, `id and genreName is empty. please supply one the value`);
         return;
       }
   
@@ -233,11 +208,7 @@ const jwt = require("jsonwebtoken");
       if (token) {
         jwt.verify(token, config.token.secret, async (err, decoded) => {
           if (err) {
-            handleError.sendCatchError(res, {
-              status: 500,
-              success: false,
-              message: `Token is not valid error = ${err}`,
-            });
+            handleError.sendCatchError(res, `Token is not valid error = ${err}`);
             return;
           } else {
             if (decoded.role !== "admin") {
@@ -249,29 +220,32 @@ const jwt = require("jsonwebtoken");
             }
 
             //have to check and delete on movie_genre before deleting
-  
-            this.service.deleteGenre(
-              { id, genreName },
-              async (err, result) => {
-                if (err) {
-                  handleError.sendCatchError(res, err);
-                  return;
-                }
-
-                return this.sendSuccessResponse(res, {
-                  status: 200,
-                  message: "genre succesfully deleted",
-                });
+            
+            this.movieGenreService.deleteMovieGenreByGenreId({id}, (err) => {
+              if (err) {
+                handleError.sendCatchError(res, err);
+                return;
               }
-            );
+
+              this.service.deleteGenre(
+                { id, genreName },
+                async (err, result) => {
+                  if (err) {
+                    handleError.sendCatchError(res, err);
+                    return;
+                  }
+  
+                  return this.sendSuccessResponse(res, {
+                    status: 200,
+                    message: "genre succesfully deleted",
+                  });
+                }
+              );
+            })
           }
         });
       } else {
-        handleError.sendCatchError(res, {
-          status: 500,
-          success: false,
-          message: `Auth Token is not supplied`,
-        });
+        handleError.sendCatchError(res, `Auth Bearer Token is not supplied`);
         return;
       }
     }
