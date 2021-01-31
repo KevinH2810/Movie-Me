@@ -20,4 +20,4 @@ some APis needed Bearer token and some weren't.
  
 
 ## Live API
-For live Documentation refer to  [Postman](https://documenter.getpostman.com/view/13926324/TW6zFmkk#intro)
+For live Documentation refer to  [Postman](https://documenter.getpostman.com/view/13926324/TW6zFmkk#intro). for detail you can see on folder ```postman```
