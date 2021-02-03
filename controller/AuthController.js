@@ -51,8 +51,6 @@ module.exports = class AuthController extends BaseController {
                 });
             }
 
-            console.log(result[0])
-
             if (result && md5(password) !== result[0].password) {
                 return this.sendCreatedResponse(res, {
                     status: 204,
