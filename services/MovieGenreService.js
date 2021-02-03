@@ -30,8 +30,6 @@ module.exports = class MovieGenreService {
 					if (err) {
 						reject(new Error(err));
 					}	
-
-					console.log("result = ", result)
           
 					if (!result || result.rowCount === 0) {
 						conn.query(

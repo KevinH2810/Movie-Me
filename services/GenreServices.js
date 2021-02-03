@@ -41,8 +41,9 @@ module.exports = class ActorService {
 
 					//if genre didn't exist insert new genre
 					if (result.rows.length === 0) {
-						const result = await this.insertGenre(payload);
-						resolve(result);
+						this.insertGenre(payload, (err, res) => {
+							resolve(result);
+						});
 					}
 					//return actor Id if actor exist
 					resolve(result.rows[0].id);
@@ -68,7 +69,6 @@ module.exports = class ActorService {
 
 	//payload = id, username, username that login
 	async insertGenre(payload, callback) {
-		console.log(payload)
 		conn.query(
 			`insert into genre (genrename)
 				select  $1::text
@@ -89,7 +89,7 @@ module.exports = class ActorService {
 					);
 				}
 
-				return callback(null,res.rows);
+				return callback(null, res.rows);
 			}
 		);
 	}

@@ -47,8 +47,9 @@ module.exports = class ActorService {
 
 					//if actor didn't exist upsert new actor
 					if (result.rowCount === 0) {
-						const result = await this.insertActor(payload);
-						resolve(result);
+						this.insertActor(payload, (err, res) => {
+							resolve(result)
+						});
 					}else{
 						//return actor Id if actor exist
 					resolve(result.rows[0].id);
@@ -71,8 +72,6 @@ module.exports = class ActorService {
 				if (err) {
 					return callback(err, null)
 				}
-
-				console.log("res = ", res)
 
 				if(res.rowCount === 0){
 					return callback(`Actor with name ${payload.actorName} already exists`, null);
